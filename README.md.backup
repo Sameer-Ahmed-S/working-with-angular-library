@@ -1,0 +1,108 @@
+# Angular Library Workspace Setup
+
+This project demonstrates how to create and consume an Angular library using NgModule pattern with Angular 18.
+
+## Project Structure
+
+```
+different-workspace-lib/
+├── shared-lib-workspace/          # Library workspace
+│   ├── projects/
+│   │   └── shared-ui/             # The actual library
+│   │       ├── src/
+│   │       │   ├── lib/
+│   │       │   │   ├── shared-ui.component.ts
+│   │       │   │   ├── shared-ui.module.ts
+│   │       │   │   └── shared-ui.service.ts
+│   │       │   └── public-api.ts
+│   │       └── package.json
+│   └── dist/shared-ui/            # Built library output
+└── consumer-app-workspace/        # Consumer app workspace
+    └── src/
+        └── app/
+            ├── app.module.ts      # Imports SharedUiModule
+            └── app.component.html # Uses <shared-shared-ui>
+```
+
+## Features
+
+- ✅ **Angular 18** with NgModule pattern (no standalone components)
+- ✅ **Separate workspaces** for library and consumer app
+- ✅ **SharedUiModule** exports reusable components
+- ✅ **Local library consumption** via file path
+- ✅ **TypeScript 5.5** compatibility
+
+## Library Workspace (`shared-lib-workspace`)
+
+### Library: `shared-ui`
+- **Component**: `SharedUiComponent` with selector `shared-shared-ui`
+- **Module**: `SharedUiModule` that declares and exports the component
+- **Service**: `SharedUiService` (injectable)
+
+### Commands:
+```bash
+cd shared-lib-workspace
+ng build shared-ui                # Build the library
+```
+
+## Consumer App Workspace (`consumer-app-workspace`)
+
+### Setup:
+- **AppModule** imports `SharedUiModule` from 'shared-ui'
+- **Bootstrap**: Uses `platformBrowserDynamic().bootstrapModule(AppModule)`
+- **Component Usage**: `<shared-shared-ui></shared-shared-ui>` in templates
+
+### Commands:
+```bash
+cd consumer-app-workspace
+npm install ../shared-lib-workspace/dist/shared-ui  # Install local library
+ng serve --port 4300                                # Run development server
+```
+
+## Development Workflow
+
+1. **Make changes** to library in `shared-lib-workspace/projects/shared-ui/`
+2. **Build library**: `cd shared-lib-workspace && ng build shared-ui`
+3. **Update consumer**: `cd consumer-app-workspace && npm install ../shared-lib-workspace/dist/shared-ui`
+4. **Test changes**: The dev server will auto-reload
+
+## Key Files
+
+### Library Module (`shared-ui.module.ts`)
+```typescript
+@NgModule({
+  declarations: [SharedUiComponent],
+  imports: [CommonModule],
+  exports: [SharedUiComponent]
+})
+export class SharedUiModule { }
+```
+
+### App Module (`app.module.ts`)
+```typescript
+@NgModule({
+  declarations: [AppComponent],
+  imports: [BrowserModule, RouterModule.forRoot(routes), SharedUiModule],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+### Component Usage
+```html
+<!-- In app.component.html -->
+<shared-shared-ui></shared-shared-ui>
+```
+
+## Version Compatibility
+
+- **Angular**: ^18.2.0
+- **TypeScript**: ~5.5.0
+- **Zone.js**: ~0.14.10
+
+## Next Steps
+
+- Add more components to the library
+- Publish library to npm registry
+- Set up automated builds
+- Add unit tests
